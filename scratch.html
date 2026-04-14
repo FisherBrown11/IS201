@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fisher's Reading Life</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Back navigation to professional page and my finance quiz game -->
+  <div class="back-bar">
+    ← <a href="index.html">Back to Professional Site</a> &nbsp;|&nbsp; <a href="financeQuiz.html">Try the Finance Quiz App →</a>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <a href="#" class="logo">Fisher Reads</a>
+    <ul>
+      <li><a href="#about-reading">About</a></li>
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="#bookshelf">Bookshelf</a></li>
+      <li><a href="#visualization">Data</a></li>
+      <li><a href="#watch">Watch</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header class="page-hero">
+    <h1>A Life Between Pages</h1>
+    <p class="tagline">"A reader lives a thousand lives before he dies. The man who never reads lives only one." — George R.R. Martin</p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="content-wrapper">
+
+    <!-- ABOUT READING — with on-page anchor -->
+    <section class="section-block anchor-target" id="about-reading">
+      <div class="section-label">My Reading Life</div>
+      <h2>Why I Read</h2>
+      <div class="gold-rule"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;">
+        <div>
+          <p>Books have shaped how I think about everything — money, people, history, and the future. Growing up and especially during my two years in Sweden, reading became a discipline and a refuge. There's something irreplaceable about sitting with a book and letting someone else's ideas completely rewire your perspective.</p>
+          <p style="margin-top:1rem;">My reading spans personal finance, behavioral economics, history, biography, and the occasional novel. I keep track of everything I've read and want to read — this page is part catalog, part manifesto.</p>
+          <p style="margin-top:1rem;">If a book changed how I see money or decision-making, it belongs on this list.</p>
+        </div>
+        <div>
+          <!-- Custom image (unsplash direct embed — works when hosted) -->
+          <img
+            src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=80"
+            alt="Stack of books on a wooden desk"
+            class="feature-image"
+          />
+          <p class="img-caption">My kind of weekend.</p>
+        </div>
+      </div>
+
+      <div class="quote-block" style="margin-top:40px;">
+        <blockquote>
+          "The more that you read, the more things you will know. The more that you learn, the more places you'll go."
+          <cite>— Dr. Seuss</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- CATEGORIES — nested list (ordered + unordered) -->
+    <section class="section-block anchor-target" id="categories">
+      <div class="section-label">What I Read</div>
+      <h2>Reading Categories</h2>
+      <div class="gold-rule"></div>
+
+      <p>I organize my reading into a few major categories. Here's a breakdown of the genres and some standout titles I've read or am reading within each:</p>
+
+      <!-- REQUIRED: Ordered list with nested unordered lists -->
+      <div class="reading-categories">
+        <ol>
+          <li>Personal Finance &amp; Investing
+            <ul>
+              <li>The Psychology of Money — Morgan Housel</li>
+              <li>The Intelligent Investor — Benjamin Graham</li>
+              <li>Rich Dad Poor Dad — Robert Kiyosaki</li>
+              <li>A Random Walk Down Wall Street — Burton Malkiel</li>
+            </ul>
+          </li>
+          <li>Behavioral Economics &amp; Decision Making
+            <ul>
+              <li>Thinking, Fast and Slow — Daniel Kahneman</li>
+              <li>Predictably Irrational — Dan Ariely</li>
+              <li>Nudge — Thaler &amp; Sunstein</li>
+            </ul>
+          </li>
+          <li>History &amp; Biography
+            <ul>
+              <li>Shoe Dog — Phil Knight</li>
+              <li>The Snowball (Warren Buffett) — Alice Schroeder</li>
+              <li>Steve Jobs — Walter Isaacson</li>
+              <li>Team of Rivals — Doris Kearns Goodwin</li>
+            </ul>
+          </li>
+          <li>Self-Development &amp; Leadership
+            <ul>
+              <li>Atomic Habits — James Clear</li>
+              <li>Deep Work — Cal Newport</li>
+              <li>Man's Search for Meaning — Viktor Frankl</li>
+            </ul>
+          </li>
+          <li>Fiction &amp; Literature
+            <ul>
+              <li>Crime and Punishment — Fyodor Dostoevsky</li>
+              <li>The Brothers Karamazov — Fyodor Dostoevsky</li>
+              <li>Ender's Game — Orson Scott Card</li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- BOOKSHELF GRID -->
+    <section class="section-block anchor-target" id="bookshelf">
+      <div class="section-label">My Library</div>
+      <h2>The Bookshelf</h2>
+      <div class="gold-rule"></div>
+      <p>A curated collection of books that have most shaped my thinking — especially around money, investing, and human behavior.</p>
+
+      <div class="books-grid">
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#1c3a6e;">📈</div>
+          <div class="book-title">The Psychology of Money</div>
+          <div class="book-author">Morgan Housel</div>
+          <span class="book-genre">Finance</span>
+        </div>
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#3d2b1f;">🧠</div>
+          <div class="book-title">Thinking, Fast and Slow</div>
+          <div class="book-author">Daniel Kahneman</div>
+          <span class="book-genre">Economics</span>
+        </div>
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#4a1c0a;">💡</div>
+          <div class="book-title">Atomic Habits</div>
+          <div class="book-author">James Clear</div>
+          <span class="book-genre">Self-Dev</span>
+        </div>
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#0f3d2e;">👟</div>
+          <div class="book-title">Shoe Dog</div>
+          <div class="book-author">Phil Knight</div>
+          <span class="book-genre">Biography</span>
+        </div>
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#2d1b4e;">📊</div>
+          <div class="book-title">The Intelligent Investor</div>
+          <div class="book-author">Benjamin Graham</div>
+          <span class="book-genre">Investing</span>
+        </div>
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#5a3010;">🔬</div>
+          <div class="book-title">Deep Work</div>
+          <div class="book-author">Cal Newport</div>
+          <span class="book-genre">Productivity</span>
+        </div>
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#1a3a1a;">💰</div>
+          <div class="book-title">Rich Dad Poor Dad</div>
+          <div class="book-author">Robert Kiyosaki</div>
+          <span class="book-genre">Finance</span>
+        </div>
+
+        <div class="book-card">
+          <div class="cover-color" style="background:#3a0a0a;">✍️</div>
+          <div class="book-title">Man's Search for Meaning</div>
+          <div class="book-author">Viktor Frankl</div>
+          <span class="book-genre">Philosophy</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TABLEAU EMBED -->
+    <section class="section-block anchor-target" id="visualization">
+      <div class="section-label">Data &amp; Visualization</div>
+      <h2>Books by the Numbers</h2>
+      <div class="gold-rule"></div>
+      <p>Here's an interactive Tableau visualization showing global reading habits and book trends — because if you love books AND data, why not combine them?</p>
+
+      <div class="tableau-wrap">
+        <!-- Live Tableau Public embed — NYT Bestsellers visualization -->
+        <div class='tableauPlaceholder' id='viz1' style='position:relative;width:100%;'>
+          <noscript>
+            <a href='#'>
+              <img alt='Dashboard' src='https://public.tableau.com/static/images/Bo/BooksDashboard/Dashboard1/1_rss.png' style='border:none'/>
+            </a>
+          </noscript>
+          <object class='tableauViz' style='width:100%;height:600px;display:block;'>
+            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+            <param name='embed_code_version' value='3' />
+            <param name='site_root' value='' />
+            <param name='name' value='GlobalLibraryStatisticsDashboard/Dashboard1' />
+            <param name='tabs' value='no' />
+            <param name='toolbar' value='yes' />
+            <param name='animate_transition' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='display_static_image' value='yes' />
+            <param name='display_spinner' value='yes' />
+            <param name='display_overlay' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='language' value='en-US' />
+          </object>
+        </div>
+        <script type='text/javascript'>
+          var divElement = document.getElementById('viz1');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          vizElement.style.width='100%';
+          vizElement.style.height='600px';
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+        <p style="margin-top:16px;font-size:0.8rem;color:#888;text-align:center;font-style:italic;">
+          Interactive Tableau viz — best viewed when hosted online. If it doesn't load here, visit
+          <a href="https://public.tableau.com" target="_blank">Tableau Public</a> directly.
+        </p>
+      </div>
+    </section>
+
+    <!-- YOUTUBE EMBED -->
+    <section class="section-block anchor-target" id="watch">
+      <div class="section-label">Recommended Watch</div>
+      <h2>On Books &amp; Reading</h2>
+      <div class="gold-rule"></div>
+      <p>One of my favorite videos on why reading — specifically books — is one of the highest-leverage habits you can build. This one by Ali Abdaal changed how I approach my reading list.</p>
+
+      <!-- REQUIRED: Embedded YouTube video via iframe -->
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/KkEOzA9DIYA"
+          title="How to Read More Books - YouTube"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <p style="margin-top:24px;">After watching this, I restructured my entire approach — dedicated reading time, a tracking system, and a deliberate mix of fiction and nonfiction to keep things interesting.</p>
+
+      <div style="margin-top:40px;text-align:center;padding:40px;background:var(--cream);border:1px solid var(--border-color);border-radius:4px;">
+        <div class="section-label" style="text-align:center;">Want Something Fun?</div>
+        <h3 style="font-size:1.5rem;margin-bottom:12px;">Test Your Finance IQ</h3>
+        <p style="max-width:400px;margin:0 auto 24px;">I built a quiz app that challenges your knowledge of investing, economics, and personal finance. Give it a try!</p>
+        <a href="app.html" class="app-link-btn">Launch the Finance Quiz →</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Fisher's Reading Page &mdash; Hand-coded HTML &amp; CSS &nbsp;|&nbsp; <a href="index.html">Back to Professional Site</a></p>
+  </footer>
+
+</body>
+</html>

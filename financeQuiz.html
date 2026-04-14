@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance IQ Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --bg: #0b1220;
+      --surface: #131e30;
+      --card: #1a2840;
+      --border: rgba(255,255,255,0.07);
+      --gold: #f0c060;
+      --gold-dim: rgba(240,192,96,0.15);
+      --green: #4ade80;
+      --green-dim: rgba(74,222,128,0.12);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.12);
+      --text: #e8edf5;
+      --muted: #7a8fa8;
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse at 15% 25%, rgba(240,192,96,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 75%, rgba(99,160,255,0.05) 0%, transparent 50%);
+    }
+
+    /* ===== BACK LINK ===== */
+    .back-link {
+      position: fixed;
+      top: 16px;
+      left: 20px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color .2s;
+    }
+    .back-link:hover { color: var(--gold); }
+
+    /* ===== WRAPPER ===== */
+    .quiz-wrapper {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* ===== SCREEN SYSTEM ===== */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ===== WELCOME SCREEN ===== */
+    .welcome-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .ticker-badge {
+      display: inline-block;
+      background: var(--gold-dim);
+      border: 1px solid rgba(240,192,96,0.25);
+      color: var(--gold);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      padding: 5px 14px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .welcome-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: white;
+      margin-bottom: 12px;
+    }
+    .welcome-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 20px 12px;
+      text-align: center;
+    }
+    .stat-box .num {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+    .stat-box .lbl {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    .difficulty-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .diff-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      color: var(--muted);
+      font-family: var(--font-body);
+    }
+    .diff-btn:hover { border-color: rgba(240,192,96,0.4); color: var(--text); }
+    .diff-btn.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); }
+    .diff-btn .diff-name { font-size: 0.88rem; font-weight: 500; margin-bottom: 4px; }
+    .diff-btn .diff-desc { font-size: 0.72rem; opacity: 0.7; }
+
+    .start-btn {
+      width: 100%;
+      background: var(--gold);
+      color: #0b1220;
+      border: none;
+      border-radius: 6px;
+      padding: 16px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .start-btn:hover { background: #f5d080; transform: translateY(-1px); }
+
+    /* ===== QUIZ SCREEN ===== */
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .q-counter {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .q-counter span { color: var(--gold); font-weight: 500; }
+    .score-display {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .score-display span { color: var(--green); font-weight: 500; }
+    .streak-display {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .streak-display span { color: var(--gold); }
+
+    .progress-track {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: width .5s ease;
+    }
+
+    .category-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 2px;
+      margin-bottom: 14px;
+    }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      margin-bottom: 20px;
+    }
+
+    .question-text {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 3vw, 1.45rem);
+      line-height: 1.5;
+      color: white;
+      margin-bottom: 24px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: var(--text);
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.45;
+    }
+    .option-btn:hover:not(:disabled) { border-color: rgba(240,192,96,0.5); background: rgba(240,192,96,0.06); }
+    .option-btn:disabled { cursor: default; }
+    .option-btn.correct { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+    .option-btn.wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+    .option-btn.reveal { border-color: var(--green); background: var(--green-dim); color: var(--green); opacity: 0.7; }
+
+    .option-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .option-btn.correct .option-letter { background: rgba(74,222,128,0.2); color: var(--green); }
+    .option-btn.wrong .option-letter { background: rgba(248,113,113,0.2); color: var(--red); }
+
+    .explanation-box {
+      background: var(--surface);
+      border-left: 3px solid var(--gold);
+      padding: 16px 20px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 16px;
+      display: none;
+    }
+    .explanation-box.show { display: block; }
+    .explanation-box strong { color: var(--gold); }
+
+    .next-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 13px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      display: none;
+    }
+    .next-btn.show { display: block; }
+    .next-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ===== RESULTS SCREEN ===== */
+    .results-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 40px 32px;
+      text-align: center;
+    }
+
+    .grade-ring {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 28px;
+      position: relative;
+    }
+    .grade-ring svg { width: 100%; height: 100%; }
+    .grade-ring .grade-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .grade-pct {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 500;
+      color: white;
+    }
+    .grade-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .results-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .results-subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .breakdown-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .breakdown-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 10px;
+      text-align: center;
+    }
+    .breakdown-item .b-num { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 500; }
+    .breakdown-item .b-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .breakdown-item.correct-box .b-num { color: var(--green); }
+    .breakdown-item.wrong-box .b-num { color: var(--red); }
+    .breakdown-item.streak-box .b-num { color: var(--gold); }
+
+    .ranking-badge {
+      display: inline-block;
+      padding: 8px 24px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 28px;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .action-btn {
+      border-radius: 6px;
+      padding: 13px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: transparent;
+    }
+    .action-btn.primary { background: var(--gold); color: #0b1220; border-color: var(--gold); }
+    .action-btn.primary:hover { background: #f5d080; }
+    .action-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes pop { 0%{transform:scale(0.95);opacity:0} 100%{transform:scale(1);opacity:1} }
+    .question-card { animation: pop .25s ease; }
+    @keyframes correct-flash { 0%,100%{background:var(--card)} 50%{background:rgba(74,222,128,0.07)} }
+    .question-card.flash-correct { animation: correct-flash .4s ease; }
+    @keyframes wrong-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .question-card.shake-wrong { animation: wrong-shake .3s ease; }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-link">← Back to Home Page</a>
+
+  <div class="quiz-wrapper">
+
+    <!-- ===== WELCOME SCREEN ===== -->
+    <div class="screen active" id="screen-welcome">
+      <div class="welcome-header">
+        <div class="ticker-badge">NYSE · NASDAQ · FINANCE IQ</div>
+        <h1>Finance IQ Quiz</h1>
+        <p>How well do you really know investing, economics, and personal finance? 10 questions, 3 difficulty levels. Let's find out.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="num">10</div>
+          <div class="lbl">Questions</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">3</div>
+          <div class="lbl">Categories</div>
+        </div>
+        <div class="stat-box">
+          <div class="num" id="hi-score-display">—</div>
+          <div class="lbl">Your Best</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">Select Difficulty</div>
+      <div class="difficulty-row">
+        <div class="diff-btn selected" onclick="selectDiff('easy',this)">
+          <div class="diff-name">📗 Beginner</div>
+          <div class="diff-desc">Core concepts</div>
+        </div>
+        <div class="diff-btn" onclick="selectDiff('medium',this)">
+          <div class="diff-name">📙 Intermediate</div>
+          <div class="diff-desc">Applied finance</div>
+        </div>
+        <div class="diff-btn" onclick="selectDiff('hard',this)">
+          <div class="diff-name">📕 Advanced</div>
+          <div class="diff-desc">Expert level</div>
+        </div>
+      </div>
+
+      <button class="start-btn" onclick="startQuiz()">Begin Quiz →</button>
+    </div>
+
+    <!-- ===== QUIZ SCREEN ===== -->
+    <div class="screen" id="screen-quiz">
+      <div class="quiz-meta">
+        <div class="q-counter">Question <span id="q-num">1</span> of 10</div>
+        <div class="streak-display">Streak <span id="streak-val">0</span>🔥</div>
+        <div class="score-display">Score <span id="score-val">0</span></div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+
+      <span class="category-tag" id="q-category">Investing</span>
+      <div class="question-card" id="question-card">
+        <div class="question-text" id="question-text"></div>
+        <div class="options-grid" id="options-grid"></div>
+        <div class="explanation-box" id="explanation-box"></div>
+      </div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+
+    <!-- ===== RESULTS SCREEN ===== -->
+    <div class="screen" id="screen-results">
+      <div class="results-card">
+        <div class="grade-ring">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke-width="8" stroke-linecap="round"
+              id="ring-circle"
+              style="stroke:var(--gold);stroke-dasharray:326.7;stroke-dashoffset:326.7;transform:rotate(-90deg);transform-origin:60px 60px;transition:stroke-dashoffset 1s ease 0.3s;"/>
+          </svg>
+          <div class="grade-text">
+            <div class="grade-pct" id="result-pct">0%</div>
+            <div class="grade-label">Score</div>
+          </div>
+        </div>
+
+        <div class="results-title" id="results-title">Well Done!</div>
+        <div class="results-subtitle" id="results-subtitle">Here's how you performed</div>
+
+        <div class="ranking-badge" id="ranking-badge"></div>
+
+        <div class="breakdown-row">
+          <div class="breakdown-item correct-box">
+            <div class="b-num" id="result-correct">0</div>
+            <div class="b-lbl">Correct</div>
+          </div>
+          <div class="breakdown-item wrong-box">
+            <div class="b-num" id="result-wrong">0</div>
+            <div class="b-lbl">Incorrect</div>
+          </div>
+          <div class="breakdown-item streak-box">
+            <div class="b-num" id="result-streak">0</div>
+            <div class="b-lbl">Best Streak</div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="action-btn primary" onclick="restartQuiz()">Play Again</button>
+          <button class="action-btn" onclick="changeDiff()">Change Difficulty</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ===== QUESTION BANK ===== */
+    const QUESTIONS = {
+      easy: [
+        { q: "What does 'APY' stand for?", options: ["Annual Percentage Yield","Adjusted Portfolio Yield","Annual Payment Year","Asset Price Yield"], ans: 0, cat: "Banking", exp: "<strong>Annual Percentage Yield</strong> accounts for compound interest, making it more useful than APR for comparing savings accounts." },
+        { q: "If a stock's price goes from $50 to $75, what is the percentage gain?", options: ["25%","50%","33%","75%"], ans: 1, cat: "Investing", exp: "Gain = (75−50)/50 × 100 = <strong>50%</strong>. Always divide by the <em>original</em> price." },
+        { q: "What is 'diversification' in investing?", options: ["Putting all money in one stock","Spreading investments to reduce risk","Buying only government bonds","Timing the market cycles"], ans: 1, cat: "Investing", exp: "<strong>Diversification</strong> means spreading investments across assets so a loss in one doesn't wipe out your whole portfolio." },
+        { q: "What is a 401(k)?", options: ["A tax form","An employer-sponsored retirement savings plan","A type of mutual fund","A government bond"], ans: 1, cat: "Retirement", exp: "A <strong>401(k)</strong> is a tax-advantaged retirement account sponsored by employers — contributions reduce taxable income." },
+        { q: "What does 'bull market' mean?", options: ["A falling market","A market with no change","A rising or optimistic market","A volatile market"], ans: 2, cat: "Markets", exp: "A <strong>bull market</strong> is characterized by rising prices and investor optimism — bulls charge forward." },
+        { q: "What is a 'dividend'?", options: ["A fee charged by brokers","A portion of company profits paid to shareholders","The growth rate of a stock","A type of bond payment"], ans: 1, cat: "Investing", exp: "A <strong>dividend</strong> is a distribution of a company's profits to its shareholders — often paid quarterly." },
+        { q: "What does GDP stand for?", options: ["Gross Domestic Product","General Distribution of Profit","Government Deficit Plan","Gross Deposit Pool"], ans: 0, cat: "Economics", exp: "<strong>Gross Domestic Product</strong> is the total monetary value of all goods and services produced in a country in a year." },
+        { q: "What is the S&P 500?", options: ["A bond index","An index of 500 large U.S. companies","A savings account type","A government program"], ans: 1, cat: "Markets", exp: "The <strong>S&P 500</strong> tracks 500 of the largest publicly traded U.S. companies and is the most-watched benchmark for U.S. stocks." },
+        { q: "Which investment type is generally considered the safest?", options: ["Penny stocks","Cryptocurrency","U.S. Treasury bonds","Junk bonds"], ans: 2, cat: "Fixed Income", exp: "<strong>U.S. Treasury bonds</strong> are backed by the full faith of the U.S. government — considered virtually risk-free." },
+        { q: "What does 'liquidity' mean in finance?", options: ["How much profit a company makes","How easily an asset can be converted to cash","The interest rate on a loan","A company's debt level"], ans: 1, cat: "Concepts", exp: "<strong>Liquidity</strong> refers to how quickly and easily an asset can be sold for cash without losing value. Cash is the most liquid asset." },
+      ],
+      medium: [
+        { q: "What is the 'Rule of 72' used for?", options: ["Calculating tax brackets","Estimating how long to double an investment","Finding a stock's P/E ratio","Measuring inflation impact"], ans: 1, cat: "Investing", exp: "Divide 72 by the annual interest rate to estimate years to double. At 8% return: 72/8 = <strong>9 years</strong>." },
+        { q: "What does a P/E ratio measure?", options: ["Price relative to earnings","Profit relative to equity","Portfolio efficiency","Percent earnings growth"], ans: 0, cat: "Valuation", exp: "The <strong>Price-to-Earnings ratio</strong> = stock price ÷ earnings per share. It tells you how much investors pay per $1 of earnings." },
+        { q: "What is 'dollar-cost averaging'?", options: ["Adjusting prices for inflation","Investing a fixed amount at regular intervals","Buying stocks at their lowest price","Averaging P/E ratios across a portfolio"], ans: 1, cat: "Strategy", exp: "<strong>Dollar-cost averaging</strong> smooths out market volatility — you buy more shares when prices are low, fewer when high." },
+        { q: "What is 'beta' in stock analysis?", options: ["A stock's dividend yield","A measure of volatility relative to the market","The stock's earnings growth rate","Its book value per share"], ans: 1, cat: "Analysis", exp: "A stock with <strong>beta > 1</strong> is more volatile than the market. Beta = 0.5 means the stock moves half as much as the index." },
+        { q: "What happens to bond prices when interest rates rise?", options: ["Bond prices rise","Bond prices fall","Bond prices stay the same","Bonds become more liquid"], ans: 1, cat: "Fixed Income", exp: "Bond prices and interest rates move <strong>inversely</strong>. When rates rise, existing bonds paying lower rates become less attractive." },
+        { q: "What is 'short selling'?", options: ["Selling stocks quickly","Borrowing shares to sell, hoping to buy back cheaper","Selling bonds before maturity","A type of options contract"], ans: 1, cat: "Markets", exp: "A short seller <strong>borrows shares</strong>, sells them, and hopes the price drops — then buys them back cheaper and pockets the difference." },
+        { q: "The CPI measures:", options: ["Corporate profit index","Changes in the price level of consumer goods","Central bank policy interest","Capital purchasing index"], ans: 1, cat: "Economics", exp: "The <strong>Consumer Price Index</strong> tracks changes in the average prices paid by consumers for goods and services — the key inflation measure." },
+        { q: "What is an ETF?", options: ["A type of futures contract","An exchange-traded fund holding a basket of assets","An Emerging Technology Fund","An Electronic Transfer Fee"], ans: 1, cat: "Investing", exp: "An <strong>Exchange-Traded Fund</strong> trades on exchanges like a stock but holds a basket of assets — combining mutual fund diversity with stock-like trading." },
+        { q: "What does 'compound interest' mean?", options: ["Interest paid only on the principal","Interest paid on both principal and accumulated interest","A fixed interest rate over time","Interest that decreases over time"], ans: 1, cat: "Concepts", exp: "<strong>Compound interest</strong> is interest on interest — over time, it dramatically accelerates wealth growth. Einstein reportedly called it the eighth wonder of the world." },
+        { q: "Which metric measures a company's ability to pay short-term debts?", options: ["Debt-to-equity ratio","Current ratio","P/E ratio","Return on equity"], ans: 1, cat: "Analysis", exp: "The <strong>current ratio</strong> = current assets ÷ current liabilities. A ratio above 1 means the company can cover its short-term obligations." },
+      ],
+      hard: [
+        { q: "What does the Sharpe Ratio measure?", options: ["Total return of a portfolio","Risk-adjusted return per unit of volatility","A company's debt load","The ratio of dividends to earnings"], ans: 1, cat: "Portfolio Theory", exp: "Sharpe Ratio = (Portfolio Return − Risk-Free Rate) ÷ Standard Deviation. It tells you how much <strong>return per unit of risk</strong> you're getting." },
+        { q: "In the CAPM model, what does 'alpha' represent?", options: ["Market risk premium","Excess return above what CAPM predicts","Volatility relative to market","The risk-free interest rate"], ans: 1, cat: "Portfolio Theory", exp: "<strong>Alpha</strong> measures a portfolio manager's excess return above the CAPM expected return — positive alpha suggests skill, not just market exposure." },
+        { q: "What is the 'efficient market hypothesis' (strong form)?", options: ["Markets overreact to news","All public and private info is reflected in prices","Only technical analysis works","Insider trading always beats the market"], ans: 1, cat: "Markets", exp: "The <strong>strong form EMH</strong> argues all information — even private/insider — is already priced in, making it impossible to consistently outperform." },
+        { q: "The Black-Scholes model is used to price:", options: ["Corporate bonds","Stock options","Mortgage-backed securities","Currency futures"], ans: 1, cat: "Derivatives", exp: "The <strong>Black-Scholes model</strong> prices European-style options using volatility, time to expiry, current price, strike price, and risk-free rate." },
+        { q: "What is the yield curve inversion historically associated with?", options: ["Economic expansion","A coming recession","Rising stock markets","Lower inflation"], ans: 1, cat: "Macro", exp: "An <strong>inverted yield curve</strong> (short rates > long rates) has preceded every U.S. recession since 1955, making it a closely watched warning signal." },
+        { q: "In discounted cash flow (DCF) valuation, what does a higher discount rate imply?", options: ["Higher intrinsic value","Lower intrinsic value","Higher cash flows","No change to value"], ans: 1, cat: "Valuation", exp: "A higher discount rate reduces the present value of future cash flows, resulting in a <strong>lower intrinsic value</strong> estimate." },
+        { q: "What is 'duration' in bond analysis?", options: ["The bond's maturity date","Sensitivity of bond price to interest rate changes","The coupon payment frequency","The default probability"], ans: 1, cat: "Fixed Income", exp: "<strong>Duration</strong> measures how much a bond's price changes for a 1% change in interest rates — a core tool for managing interest rate risk." },
+        { q: "What is 'convexity' in bond analysis?", options: ["The bond's credit rating","The curvature of the price-yield relationship","The slope of the yield curve","Default risk adjusted yield"], ans: 1, cat: "Fixed Income", exp: "<strong>Convexity</strong> captures that the price-yield relationship is curved, not linear. Positive convexity means bonds gain more when rates fall than they lose when rates rise." },
+        { q: "What does the Fama-French Three-Factor Model add to CAPM?", options: ["GDP growth and inflation","Size and value factors","Industry sector and geography","Earnings yield and momentum"], ans: 1, cat: "Portfolio Theory", exp: "Fama-French adds <strong>size (SMB)</strong> and <strong>value (HML)</strong> factors to CAPM's market factor, explaining more variation in stock returns." },
+        { q: "What is 'systematic risk'?", options: ["Risk specific to one company","Market-wide risk that cannot be diversified away","Risk from fraud or mismanagement","Currency exchange risk"], ans: 1, cat: "Risk", exp: "<strong>Systematic risk</strong> (market risk) affects all securities and can't be eliminated through diversification — unlike unsystematic (company-specific) risk." },
+      ]
+    };
+
+    /* ===== STATE ===== */
+    let difficulty = 'easy';
+    let questions = [];
+    let current = 0;
+    let score = 0;
+    let streak = 0;
+    let bestStreak = 0;
+    let answered = false;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let hiScore = 0;
+
+    /* ===== HELPERS ===== */
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function show(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function selectDiff(d, el) {
+      difficulty = d;
+      document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    /* ===== QUIZ LOGIC ===== */
+    function startQuiz() {
+      questions = shuffle(QUESTIONS[difficulty]);
+      current = 0; score = 0; streak = 0; bestStreak = 0;
+      correctCount = 0; wrongCount = 0;
+      show('screen-quiz');
+      renderQuestion();
+      // Update hi score display
+      const stored = localStorage.getItem('financeiq_hi_' + difficulty);
+      hiScore = stored ? parseInt(stored) : 0;
+    }
+
+    function renderQuestion() {
+      answered = false;
+      const q = questions[current];
+      document.getElementById('q-num').textContent = current + 1;
+      document.getElementById('q-category').textContent = q.cat;
+      document.getElementById('question-text').textContent = q.q;
+      document.getElementById('progress-fill').style.width = (current / 10 * 100) + '%';
+      document.getElementById('score-val').textContent = score;
+      document.getElementById('streak-val').textContent = streak;
+
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+        btn.onclick = () => selectAnswer(i, btn, q);
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('explanation-box').classList.remove('show');
+      document.getElementById('explanation-box').innerHTML = '';
+      document.getElementById('next-btn').classList.remove('show');
+      document.querySelector('.question-card').style.animation = 'none';
+      setTimeout(() => { document.querySelector('.question-card').style.animation = ''; }, 10);
+    }
+
+    function selectAnswer(idx, btn, q) {
+      if (answered) return;
+      answered = true;
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      if (idx === q.ans) {
+        btn.classList.add('correct');
+        score += (difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 20);
+        streak++;
+        correctCount++;
+        if (streak > bestStreak) bestStreak = streak;
+        document.querySelector('.question-card').classList.add('flash-correct');
+        setTimeout(() => document.querySelector('.question-card').classList.remove('flash-correct'), 400);
+      } else {
+        btn.classList.add('wrong');
+        buttons[q.ans].classList.add('reveal');
+        streak = 0;
+        wrongCount++;
+        document.querySelector('.question-card').classList.add('shake-wrong');
+        setTimeout(() => document.querySelector('.question-card').classList.remove('shake-wrong'), 300);
+      }
+
+      document.getElementById('score-val').textContent = score;
+      document.getElementById('streak-val').textContent = streak;
+
+      const expBox = document.getElementById('explanation-box');
+      expBox.innerHTML = q.exp;
+      expBox.classList.add('show');
+
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.textContent = current < 9 ? 'Next Question →' : 'See Results →';
+      nextBtn.classList.add('show');
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current >= 10) {
+        showResults();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function showResults() {
+      show('screen-results');
+      const pct = Math.round(score / (difficulty === 'easy' ? 100 : difficulty === 'medium' ? 150 : 200) * 100);
+      const clampedPct = Math.min(pct, 100);
+
+      document.getElementById('result-pct').textContent = clampedPct + '%';
+      document.getElementById('result-correct').textContent = correctCount;
+      document.getElementById('result-wrong').textContent = wrongCount;
+      document.getElementById('result-streak').textContent = bestStreak;
+
+      // Animate ring
+      setTimeout(() => {
+        const circum = 326.7;
+        const offset = circum - (clampedPct / 100) * circum;
+        document.getElementById('ring-circle').style.strokeDashoffset = offset;
+        // Color ring based on score
+        const color = clampedPct >= 80 ? 'var(--green)' : clampedPct >= 60 ? 'var(--gold)' : 'var(--red)';
+        document.getElementById('ring-circle').style.stroke = color;
+      }, 100);
+
+      // Title, subtitle, badge
+      let title, subtitle, badge, badgeBg;
+      if (clampedPct >= 90) {
+        title = 'Finance Genius!'; subtitle = 'You clearly know your stuff. Goldman Sachs is calling.';
+        badge = '🏆 Wall Street Level'; badgeBg = 'rgba(74,222,128,0.12)'; document.getElementById('ranking-badge').style.color = 'var(--green)'; document.getElementById('ranking-badge').style.border = '1px solid rgba(74,222,128,0.3)';
+      } else if (clampedPct >= 75) {
+        title = 'Strong Performance!'; subtitle = "You've got solid fundamentals. Keep building on this.";
+        badge = '📈 Analyst Material'; badgeBg = 'var(--gold-dim)'; document.getElementById('ranking-badge').style.color = 'var(--gold)'; document.getElementById('ranking-badge').style.border = '1px solid rgba(240,192,96,0.3)';
+      } else if (clampedPct >= 55) {
+        title = 'Not Bad!'; subtitle = 'You know the basics. Some deeper concepts to review.';
+        badge = '📚 Keep Studying'; badgeBg = 'rgba(255,255,255,0.05)'; document.getElementById('ranking-badge').style.color = 'var(--muted)'; document.getElementById('ranking-badge').style.border = '1px solid var(--border)';
+      } else {
+        title = 'Room to Grow'; subtitle = "Don't worry — the best investors all started from zero.";
+        badge = '🌱 Just Getting Started'; badgeBg = 'rgba(255,255,255,0.04)'; document.getElementById('ranking-badge').style.color = 'var(--muted)'; document.getElementById('ranking-badge').style.border = '1px solid var(--border)';
+      }
+
+      document.getElementById('results-title').textContent = title;
+      document.getElementById('results-subtitle').textContent = subtitle;
+      document.getElementById('ranking-badge').textContent = badge;
+      document.getElementById('ranking-badge').style.background = badgeBg;
+
+      // Save hi score
+      const key = 'financeiq_hi_' + difficulty;
+      const prev = parseInt(localStorage.getItem(key) || '0');
+      if (score > prev) localStorage.setItem(key, score);
+      document.getElementById('hi-score-display').textContent = Math.max(score, prev);
+    }
+
+    function restartQuiz() {
+      startQuiz();
+    }
+
+    function changeDiff() {
+      show('screen-welcome');
+      const stored = localStorage.getItem('financeiq_hi_' + difficulty);
+      document.getElementById('hi-score-display').textContent = stored || '—';
+    }
+
+    // Load hi score on page load
+    window.onload = () => {
+      const stored = localStorage.getItem('financeiq_hi_easy');
+      document.getElementById('hi-score-display').textContent = stored || '—';
+    };
+  </script>
+</body>
+</html>
